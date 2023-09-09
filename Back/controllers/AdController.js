@@ -1,15 +1,21 @@
 const Ad = require('../models/Ad');
 const jwt = require('jsonwebtoken');
 const Vote = require('../models/Vote');
-
+const User = require('../models/User');
 
 exports.getAllAds = async (req, res) => {
     try {
         const ads = await Ad.findAll({
-            attributes: ['id', 'title', 'description', 'upvotes', 'downvotes']
+            attributes: ['id', 'title', 'description', 'imageUrl', 'publishTime', 'merchantName', 'commentsCount', 'upvotes', 'downvotes'],
+            include: {
+                model: User,
+                as: 'author',
+                attributes: ['username', 'avatarUrl']
+            }
         });
         res.send(ads);
     } catch (error) {
+        console.log(error)
         res.status(500).send('Server error');
     }
 };
@@ -19,7 +25,12 @@ exports.getAdById = async (req, res) => {
         const adId = req.params.id;
         const ad = await Ad.findOne({
             where: { id: adId },
-            attributes: ['id', 'title', 'description', 'upvotes', 'downvotes']
+            attributes: ['id', 'title', 'description', 'imageUrl', 'publishTime', 'merchantName', 'commentsCount', 'upvotes', 'downvotes'],
+            include: {
+                model: User,
+                as: 'author',
+                attributes: ['username', 'avatarUrl']
+            }
         });
 
         if (!ad) {
@@ -42,7 +53,13 @@ exports.createAd = async (req, res) => {
             return res.status(403).send('Authorization denied');
         }
 
-        const ad = await Ad.create(req.body);
+        const newAdData = {
+            ...req.body,
+            authorId: decoded.userId
+        };
+
+        req.body.publishTime = new Date();
+        const ad = await Ad.create(newAdData);
         res.status(201).send(ad);
     } catch (error) {
         res.status(500).send('Server error');

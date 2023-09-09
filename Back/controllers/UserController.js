@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, avatar } = req.body;
 
         // Vérifiez si l'utilisateur existe déjà
         const existingUser = await User.findOne({ where: { username } });
@@ -12,9 +12,14 @@ exports.register = async (req, res) => {
             return res.status(400).send('Username already exists');
         }
 
-        // Créez un nouvel utilisateur
-        const user = await User.create({ username, password });
-        res.status(201).send({ userId: user.id, username: user.username, role: user.role });
+        // Créez un nouvel utilisateur avec les champs supplémentaires
+        const user = await User.create({ username, password, avatar });
+        res.status(201).send({
+            userId: user.id,
+            username: user.username,
+            role: user.role,
+            avatar: user.avatar,
+        });
     } catch (error) {
         res.status(500).send('Server error');
     }
@@ -40,7 +45,7 @@ exports.login = async (req, res) => {
         const token = jwt.sign({ userId: user.id, role: user.role }, 'secretkey', { expiresIn: '1h' });
         const isAdmin = user.role === 'admin'; // Ici, je suppose que le rôle administrateur est représenté par la chaîne 'admin'.
 
-        res.send({ token, isAdmin });
+        res.send({ token, isAdmin, avatar: user.avatar });
     } catch (error) {
         res.status(500).send('Server error');
     }

@@ -48,7 +48,6 @@ export default {
       username: localStorage.getItem('username') || 'NomUtilisateur',
       password: '',  // pour le formulaire de connexion
       showLoginModal: false  // pour afficher ou masquer le modal de connexion
-
     };
   },
   methods: {
@@ -71,11 +70,7 @@ export default {
           localStorage.setItem('username', this.username);
           this.isConnected = true;
           this.showLoginModal = false;
-          console.log('After login isConnected:', this.isConnected);
-
         } else {
-          console.log('After login isConnected:', this.isConnected);
-
           // Gérer les erreurs de connexion
           console.error("Erreur lors de la connexion:", data.message);
         }
@@ -87,8 +82,6 @@ export default {
       localStorage.removeItem('token');  // Supprimez le token du localStorage
       this.username = 'NomUtilisateur';
       this.isConnected = false;
-      console.log('After logout isConnected:', this.isConnected);
-
     },
     async redirectToHome() {
       try {
@@ -100,6 +93,7 @@ export default {
 
         const data = await response.json();
         if (data.role === 'admin') {
+          this.isAdmin = true;
           await this.$router.push('/dashboard');
         } else {
           await this.$router.push('/');

@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <h1>Web Analytics Dashboard</h1>
+      <h1>DealGrown Analytics</h1>
     </header>
 
     <nav>

@@ -2,7 +2,16 @@
   <div class="items-container">
     <div v-for="item in items" :key="item.id" class="item-card">
       <h3>{{ item.title }}</h3>
-      <p>{{ item.description }}</p>
+      <img :src="item.imageUrl" alt="Image of the ad" class="ad-image">
+      <p>{{ truncateDescription(item.description) }}</p>
+      <div class="ad-details">
+        <span>Published at: {{ item.publishTime }}</span>
+        <span>Merchant: {{ item.merchantName }}</span>
+        <div class="author-info">
+          <img :src="item.author.avatarUrl" alt="Author's avatar" class="author-avatar">
+          <span>By: {{ item.author.username }}</span>
+        </div>
+      </div>
       <div class="votes">
         <button @click="upvote(item.id)">👍 {{ item.upvotes }}</button>
         <button @click="downvote(item.id)">👎 {{ item.downvotes }}</button>
@@ -27,6 +36,12 @@ export default {
     }
   },
   methods: {
+    truncateDescription(description) {
+      if (description.length > 190) {
+        return description.substring(0, 190) + '...';
+      }
+      return description;
+    },
     async upvote(id) {
       try {
         const response = await fetch(`http://localhost:3000/api/deals/${id}/upvote`, {
@@ -96,6 +111,27 @@ export default {
       background-color: transparent;
       border: none;
       cursor: pointer;
+    }
+  }
+
+  .ad-image {
+    max-width: 100%;
+    margin: 1rem 0;
+  }
+
+  .ad-details {
+    margin: 1rem 0;
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .author-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
     }
   }
 }

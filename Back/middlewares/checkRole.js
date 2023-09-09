@@ -5,7 +5,7 @@ const checkUserRole = async (req, res, next) => {
     try {
         // Récupérer le token du header
         const token = req.headers['authorization'].split(' ')[1];
-
+        console.log(token)
         // Vérifier le token
         const decoded = jwt.verify(token, 'secretkey');  // Remplacez 'YOUR_SECRET_KEY' par votre clé secrète utilisée lors de la création du token
 
@@ -14,13 +14,15 @@ const checkUserRole = async (req, res, next) => {
        // const { role } = decoded;
 
         // b) Ou rechercher le rôle dans votre base de données en utilisant les informations décodées :
-         const user = await User.findById(decoded.id); // Exemple si vous utilisez Mongoose
+        console.log()
+        const user = await User.findOne({ where: { id: decoded.userId } });
          const role = user.role;
 
         // Envoie du rôle à l'utilisateur
         res.status(200).json({ role });
 
     } catch (error) {
+        console.log(error);
         res.status(401).json({ message: 'Authentification échouée' });
     }
 };

@@ -1,5 +1,3 @@
-// models/User.js
-
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const bcrypt = require('bcryptjs');
@@ -21,7 +19,10 @@ const User = sequelize.define('User', {
             len: [6, 42] // Assurez-vous que le mot de passe a une longueur minimale et maximale.
         }
     },
-    
+    avatarUrl: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     role: {
         type: DataTypes.ENUM('member', 'admin', 'reviewer'),
         defaultValue: 'member'

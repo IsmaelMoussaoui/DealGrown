@@ -16,6 +16,7 @@ const routes = [
         path: '/dashboard',
         component: AdminDashboard,
         beforeEnter: async (to, from, next) => {
+            console.log(localStorage.getItem('token'));
             try {
                 const response = await fetch("http://localhost:3000/api/checkUserRole", {
                     headers: {
